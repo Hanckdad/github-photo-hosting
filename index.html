@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Image Host • Upload ke Issues</title>
+    <title>GitHub Image Upload • Foto Saja</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -21,8 +21,8 @@
             <div class="logo">
                 <div class="logo-icon"><i class="fab fa-github"></i></div>
                 <div class="logo-text">
-                    <h1>GitHub Image Host</h1>
-                    <span class="tagline">Upload langsung ke GitHub Issues</span>
+                    <h1>GitHub Image</h1>
+                    <span class="tagline">Upload Foto ke Issues</span>
                 </div>
             </div>
             <div class="repo-badge">
@@ -32,48 +32,25 @@
         </header>
 
         <main class="main-content">
-            <!-- Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-upload"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="upload-count">0</div>
-                        <div class="stat-label">Total Uploads</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="token-status">-</div>
-                        <div class="stat-label">Token Status</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Upload Section -->
             <div class="upload-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-cloud-upload-alt"></i> Upload Gambar</h2>
-                    <p>Gambar akan diupload ke GitHub Issues dan bisa langsung dilihat seperti contoh: 
-                    <a href="https://github.com/Hanckdad/Anime-Nox-Frontend./issues/1#issue-3657934227" target="_blank">Contoh Issue</a></p>
+                    <h2><i class="fas fa-camera"></i> Upload Foto</h2>
+                    <p>Foto akan langsung diupload ke GitHub Issues tanpa caption</p>
                 </div>
 
                 <!-- Messages -->
                 <div class="message success-message" id="success-message">
                     <div class="message-icon">✅</div>
                     <div class="message-content">
-                        <strong>Berhasil!</strong> Gambar telah diupload ke GitHub Issues.
+                        <strong>Berhasil!</strong> Foto telah diupload ke GitHub Issues.
                     </div>
                 </div>
 
                 <div class="message error-message" id="error-message">
                     <div class="message-icon">❌</div>
                     <div class="message-content">
-                        <strong>Error!</strong> <span id="error-text">Gagal mengupload gambar.</span>
+                        <strong>Error!</strong> <span id="error-text">Gagal mengupload foto.</span>
                     </div>
                 </div>
 
@@ -81,13 +58,13 @@
                 <div class="upload-card">
                     <div class="upload-area" id="upload-area">
                         <div class="upload-icon">
-                            <i class="fas fa-images"></i>
+                            <i class="fas fa-cloud-upload-alt"></i>
                         </div>
-                        <h3>Seret & Lepas Gambar di Sini</h3>
+                        <h3>Seret & Lepas Foto di Sini</h3>
                         <p>Format: JPG, PNG, GIF, WebP (Maks. 10MB)</p>
                         <div class="upload-button">
                             <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
-                                <i class="fas fa-folder-open"></i> Pilih File
+                                <i class="fas fa-folder-open"></i> Pilih Foto
                             </button>
                         </div>
                         <input type="file" id="file-input" accept="image/*" hidden>
@@ -96,7 +73,7 @@
                     <!-- Preview -->
                     <div class="preview-container" id="preview-container">
                         <div class="preview-header">
-                            <h4><i class="fas fa-eye"></i> Preview Gambar</h4>
+                            <h4><i class="fas fa-eye"></i> Preview Foto</h4>
                             <button class="btn btn-close" onclick="uploader.resetForm()">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -135,7 +112,7 @@
                         </div>
                         <div class="loading-text">
                             <h4>Mengupload ke GitHub...</h4>
-                            <p>Sedang membuat issue baru dengan gambar Anda</p>
+                            <p>Sedang membuat issue dengan foto Anda</p>
                         </div>
                     </div>
 
@@ -152,27 +129,17 @@
                                 <div class="info-box">
                                     <i class="fas fa-link"></i>
                                     <div>
-                                        <strong>GitHub Issue URL:</strong>
-                                        <p>Gambar Anda sekarang tersedia di GitHub Issues</p>
+                                        <strong>Foto telah diupload!</strong>
+                                        <p>Foto sekarang tersedia di GitHub Issues</p>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="url-display">
-                                <label>URL Issue GitHub:</label>
+                                <label>URL GitHub Issues:</label>
                                 <div class="url-box">
                                     <input type="text" id="url-output" readonly>
                                     <button class="btn btn-copy" onclick="uploader.copyUrl()">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="markdown-preview">
-                                <label>Format Markdown:</label>
-                                <div class="code-box">
-                                    <code id="markdown-output"></code>
-                                    <button class="btn btn-copy" onclick="uploader.copyMarkdown()">
                                         <i class="fas fa-copy"></i>
                                     </button>
                                 </div>
@@ -194,73 +161,23 @@
             <!-- Token Section -->
             <div class="token-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-key"></i> Konfigurasi GitHub</h2>
-                    <p>Setup token GitHub untuk autentikasi</p>
+                    <h2><i class="fas fa-key"></i> GitHub Token</h2>
                 </div>
                 <div class="token-card">
                     <div class="token-input-group">
                         <div class="input-with-icon">
                             <i class="fas fa-key"></i>
-                            <input type="password" id="github-token" placeholder="Masukkan GitHub Token (ghp_...)" class="token-input">
+                            <input type="password" id="github-token" placeholder="GitHub Token (ghp_...)" class="token-input">
                         </div>
                         <button class="btn btn-test" onclick="uploader.testToken()">
-                            <i class="fas fa-check"></i> Test Token
+                            <i class="fas fa-check"></i> Test
                         </button>
                     </div>
                     <div class="token-info">
-                        <div class="info-text">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Token dienkripsi dan disimpan secara lokal di browser</span>
-                        </div>
                         <div class="token-status" id="token-status-text">
                             <i class="fas fa-clock"></i>
                             <span>Token belum di-test</span>
                         </div>
-                    </div>
-                    <div class="setup-guide">
-                        <h5><i class="fas fa-book"></i> Cara mendapatkan token:</h5>
-                        <ol>
-                            <li>Buka <a href="https://github.com/settings/tokens" target="_blank">GitHub Tokens</a></li>
-                            <li>Klik "Generate new token" → "Generate new token (classic)"</li>
-                            <li>Centang permission <code>repo</code> (full control)</li>
-                            <li>Copy token yang dimulai dengan <code>ghp_</code></li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Example Section -->
-            <div class="example-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-eye"></i> Contoh Hasil</h2>
-                    <p>Seperti inilah tampilan gambar di GitHub Issues setelah diupload</p>
-                </div>
-                <div class="example-card">
-                    <div class="example-preview">
-                        <div class="github-issue-preview">
-                            <div class="issue-header">
-                                <div class="issue-avatar">
-                                    <i class="fab fa-github"></i>
-                                </div>
-                                <div class="issue-info">
-                                    <div class="issue-title">🖼️ Image Upload - 25 Desember 2024 14:30</div>
-                                    <div class="issue-meta">Hanckdad opened this issue 2 minutes ago</div>
-                                </div>
-                            </div>
-                            <div class="issue-body">
-                                <div class="issue-content">
-                                    <p><strong>Contoh gambar yang diupload:</strong></p>
-                                    <div class="image-preview-example">
-                                        <img src="https://via.placeholder.com/600x400/6366f1/ffffff?text=Contoh+Gambar" alt="Contoh Gambar">
-                                    </div>
-                                    <p><em>Automatically uploaded via GitHub Image Host</em></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="example-url">
-                        <strong>URL yang dihasilkan:</strong>
-                        <code>https://github.com/Hanckdad/Database-Foto/issues/1#issue-3657934227</code>
                     </div>
                 </div>
             </div>
@@ -270,14 +187,11 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <i class="fab fa-github"></i>
-                    <span>GitHub Image Host</span>
+                    <span>GitHub Image Upload</span>
                 </div>
                 <div class="footer-links">
-                    <a href="https://github.com/Hanckdad" target="_blank">
-                        <i class="fab fa-github"></i> Hanckdad
-                    </a>
-                    <a href="https://github.com/Hanckdad/Database-Foto" target="_blank">
-                        <i class="fas fa-database"></i> Database-Foto
+                    <a href="https://github.com/Hanckdad/Database-Foto/issues" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Lihat Issues
                     </a>
                 </div>
             </div>
