@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Image Upload • Foto Saja</title>
+    <title>GitHub Image Upload • Releases</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -22,7 +22,7 @@
                 <div class="logo-icon"><i class="fab fa-github"></i></div>
                 <div class="logo-text">
                     <h1>GitHub Image</h1>
-                    <span class="tagline">Upload Foto ke Issues</span>
+                    <span class="tagline">Upload ke GitHub Releases</span>
                 </div>
             </div>
             <div class="repo-badge">
@@ -36,14 +36,14 @@
             <div class="upload-section">
                 <div class="section-header">
                     <h2><i class="fas fa-camera"></i> Upload Foto</h2>
-                    <p>Foto akan langsung diupload ke GitHub Issues tanpa caption</p>
+                    <p>Foto akan diupload ke GitHub Releases sebagai attachment</p>
                 </div>
 
                 <!-- Messages -->
                 <div class="message success-message" id="success-message">
                     <div class="message-icon">✅</div>
                     <div class="message-content">
-                        <strong>Berhasil!</strong> Foto telah diupload ke GitHub Issues.
+                        <strong>Berhasil!</strong> Foto telah diupload ke GitHub Releases.
                     </div>
                 </div>
 
@@ -112,7 +112,7 @@
                         </div>
                         <div class="loading-text">
                             <h4>Mengupload ke GitHub...</h4>
-                            <p>Sedang membuat issue dengan foto Anda</p>
+                            <p>Sedang membuat release dengan foto Anda</p>
                         </div>
                     </div>
 
@@ -130,16 +130,26 @@
                                     <i class="fas fa-link"></i>
                                     <div>
                                         <strong>Foto telah diupload!</strong>
-                                        <p>Foto sekarang tersedia di GitHub Issues</p>
+                                        <p>Foto sekarang tersedia di GitHub Releases</p>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="url-display">
-                                <label>URL GitHub Issues:</label>
+                                <label>URL GitHub Releases:</label>
                                 <div class="url-box">
                                     <input type="text" id="url-output" readonly>
                                     <button class="btn btn-copy" onclick="uploader.copyUrl()">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="markdown-preview">
+                                <label>Format Markdown:</label>
+                                <div class="code-box">
+                                    <code id="markdown-output"></code>
+                                    <button class="btn btn-copy" onclick="uploader.copyMarkdown()">
                                         <i class="fas fa-copy"></i>
                                     </button>
                                 </div>
@@ -181,6 +191,38 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> Cara Kerja</h2>
+                </div>
+                <div class="info-card">
+                    <div class="info-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <strong>Upload ke GitHub Releases</strong>
+                                <p>Foto diupload sebagai asset di GitHub Releases</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <strong>Dapatkan URL Asli</strong>
+                                <p>URL yang dihasilkan adalah URL langsung ke file gambar</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <strong>Format: <code>![filename](https://github.com/...)</code></strong>
+                                <p>Bisa langsung digunakan di markdown</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
         <footer class="footer">
@@ -190,8 +232,8 @@
                     <span>GitHub Image Upload</span>
                 </div>
                 <div class="footer-links">
-                    <a href="https://github.com/Hanckdad/Database-Foto/issues" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Lihat Issues
+                    <a href="https://github.com/Hanckdad/Database-Foto/releases" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Lihat Releases
                     </a>
                 </div>
             </div>
