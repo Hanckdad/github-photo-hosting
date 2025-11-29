@@ -14,7 +14,7 @@ class GitHubUploader {
         this.loadStoredData();
         this.setupDragAndDrop();
         
-        // Set default token (encrypted)
+        // Set default token
         const defaultToken = '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';
         this.encryption.storeToken(defaultToken);
         document.getElementById('github-token').value = defaultToken;
@@ -85,12 +85,12 @@ class GitHubUploader {
 
     validateFile(file) {
         if (!file.type.startsWith('image/')) {
-            this.showError('Only image files are allowed (JPG, PNG, GIF, WebP)');
+            this.showError('Hanya file gambar yang diizinkan (JPG, PNG, GIF, WebP)');
             return false;
         }
         
         if (file.size > 10 * 1024 * 1024) {
-            this.showError('File size too large. Maximum size is 10MB.');
+            this.showError('Ukuran file terlalu besar. Maksimal 10MB.');
             return false;
         }
         
@@ -121,43 +121,43 @@ class GitHubUploader {
             this.showSection('preview-container');
         };
         reader.onerror = () => {
-            this.showError('Failed to read file');
+            this.showError('Gagal membaca file');
         };
         reader.readAsDataURL(file);
     }
 
     async uploadImage() {
         if (!this.currentFile) {
-            this.showError('Please select a file first');
+            this.showError('Pilih file terlebih dahulu');
             return;
         }
 
         const token = this.encryption.getToken();
         if (!token) {
-            this.showError('Please enter your GitHub token first');
+            this.showError('Masukkan GitHub token terlebih dahulu');
             return;
         }
 
         const isValid = await this.validateToken(token);
         if (!isValid) {
-            this.showError('Invalid GitHub token. Please check your token and try again.');
+            this.showError('Token GitHub tidak valid. Periksa token Anda.');
             return;
         }
 
         this.showSection('loading-container');
 
         try {
-            const imageUrl = await this.createIssueWithImage(token);
+            const issueUrl = await this.createIssueWithImage(token);
             
             this.uploadCount++;
             localStorage.setItem('upload_count', this.uploadCount.toString());
             this.updateStats();
             
-            this.showSuccess(imageUrl);
+            this.showSuccess(issueUrl);
             
         } catch (error) {
             console.error('Upload error:', error);
-            this.showError(`Upload failed: ${error.message}`);
+            this.showError(`Upload gagal: ${error.message}`);
         }
     }
 
@@ -202,13 +202,13 @@ class GitHubUploader {
 **File Name:** ${this.currentFile.name}
 **File Size:** ${this.formatFileSize(this.currentFile.size)}
 **Upload Time:** ${new Date().toLocaleString('id-ID')}
-**Uploaded Via:** PixelHost GitHub Uploader
+**Uploaded Via:** GitHub Image Host
 
 ![${this.currentFile.name}](${base64Image})
 
 ---
 
-*Automatically uploaded via PixelHost*
+*Automatically uploaded via GitHub Image Host*
 *Timestamp: ${new Date().toISOString()}*`;
     }
 
@@ -245,7 +245,7 @@ class GitHubUploader {
     async testToken() {
         const token = document.getElementById('github-token').value.trim();
         if (!token) {
-            this.showError('Please enter a token first');
+            this.showError('Masukkan token terlebih dahulu');
             return;
         }
 
@@ -253,9 +253,9 @@ class GitHubUploader {
         
         const isValid = await this.validateToken(token);
         if (isValid) {
-            this.showMessage('Token is valid! You can now upload images.', 'success');
+            this.showMessage('Token valid! Anda bisa mengupload gambar.', 'success');
         } else {
-            this.showError('Token is invalid. Please check your token and permissions.');
+            this.showError('Token tidak valid. Periksa token dan permissions.');
         }
     }
 
@@ -268,10 +268,10 @@ class GitHubUploader {
         });
     }
 
-    showSuccess(imageUrl) {
-        const markdownText = `![Image](${imageUrl})`;
+    showSuccess(issueUrl) {
+        const markdownText = `![Image](${issueUrl})`;
         
-        document.getElementById('url-output').value = imageUrl;
+        document.getElementById('url-output').value = issueUrl;
         document.getElementById('markdown-output').textContent = markdownText;
         
         this.showSection('result-container');
@@ -307,7 +307,7 @@ class GitHubUploader {
         if (messageEl) {
             const contentEl = messageEl.querySelector('.message-content');
             if (contentEl) {
-                contentEl.innerHTML = `<strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}`;
+                contentEl.innerHTML = `<strong>${type === 'success' ? 'Berhasil!' : 'Error!'}</strong> ${message}`;
             }
             messageEl.style.display = 'flex';
             
@@ -438,7 +438,7 @@ class GitHubUploader {
     }
 }
 
-// Initialize uploader when DOM is loaded
+// Initialize uploader
 document.addEventListener('DOMContentLoaded', () => {
     window.uploader = new GitHubUploader();
 });
