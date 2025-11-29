@@ -526,6 +526,8 @@ body {
 .code-box code {
     color: var(--primary);
     overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
 }
 
 .result-actions {
@@ -778,5 +780,9 @@ body {
 
     .features-grid {
         grid-template-columns: 1fr;
+    }
+
+    .upload-area {
+        padding: 40px 20px;
     }
 }
