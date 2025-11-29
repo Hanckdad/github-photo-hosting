@@ -1,6 +1,6 @@
 class TokenEncryption {
     constructor() {
-        this.key = 'GitHubImageHostToken2024!';
+        this.key = 'GitHubImageSimple2024!';
     }
 
     encrypt(text) {
@@ -22,7 +22,6 @@ class TokenEncryption {
             }
             return result;
         } catch (e) {
-            console.error('Decryption error:', e);
             return null;
         }
     }
@@ -43,16 +42,7 @@ class TokenEncryption {
             if (!encrypted) return null;
             return this.decrypt(encrypted);
         } catch (e) {
-            console.error('Token retrieval error:', e);
             return null;
-        }
-    }
-
-    clearToken() {
-        try {
-            localStorage.removeItem('github_image_token');
-        } catch (e) {
-            console.error('Token clear error:', e);
         }
     }
 }
