@@ -113,15 +113,9 @@ class GitHubUploader {
                 document.getElementById('file-dimensions').textContent = 
                     `${tempImg.width} × ${tempImg.height}`;
             };
-            tempImg.onerror = () => {
-                document.getElementById('file-dimensions').textContent = 'Unknown';
-            };
             tempImg.src = e.target.result;
             
             this.showSection('preview-container');
-        };
-        reader.onerror = () => {
-            this.showError('Gagal membaca file');
         };
         reader.readAsDataURL(file);
     }
@@ -140,7 +134,7 @@ class GitHubUploader {
 
         const isValid = await this.validateToken(token);
         if (!isValid) {
-            this.showError('Token GitHub tidak valid. Periksa token Anda.');
+            this.showError('Token GitHub tidak valid.');
             return;
         }
 
@@ -151,7 +145,6 @@ class GitHubUploader {
             
             this.uploadCount++;
             localStorage.setItem('upload_count', this.uploadCount.toString());
-            this.updateStats();
             
             this.showSuccess(issueUrl);
             
@@ -164,10 +157,11 @@ class GitHubUploader {
     async createIssueWithImage(token) {
         const base64Image = await this.fileToBase64(this.currentFile);
         
+        // Title hanya timestamp saja
+        const timestamp = new Date().getTime();
         const issueData = {
-            title: `🖼️ Image Upload - ${new Date().toLocaleString('id-ID')}`,
-            body: this.generateIssueBody(base64Image),
-            labels: ['image-upload', 'automated']
+            title: `Foto-${timestamp}`,
+            body: `![](${base64Image})` // Hanya gambar saja, tanpa caption
         };
 
         const response = await fetch(`${this.baseUrl}/repos/${this.owner}/${this.repo}/issues`, {
@@ -186,30 +180,12 @@ class GitHubUploader {
             try {
                 const errorData = await response.json();
                 errorMessage = errorData.message || errorMessage;
-            } catch (e) {
-                // Ignore JSON parse error
-            }
+            } catch (e) {}
             throw new Error(errorMessage);
         }
 
         const result = await response.json();
         return result.html_url;
-    }
-
-    generateIssueBody(base64Image) {
-        return `## 📷 Image Upload
-
-**File Name:** ${this.currentFile.name}
-**File Size:** ${this.formatFileSize(this.currentFile.size)}
-**Upload Time:** ${new Date().toLocaleString('id-ID')}
-**Uploaded Via:** GitHub Image Host
-
-![${this.currentFile.name}](${base64Image})
-
----
-
-*Automatically uploaded via GitHub Image Host*
-*Timestamp: ${new Date().toISOString()}*`;
     }
 
     async validateToken(token) {
@@ -232,9 +208,8 @@ class GitHubUploader {
                 return false;
             }
 
-            const userData = await response.json();
             this.updateTokenStatus('valid');
-            return !!userData.login;
+            return true;
             
         } catch (error) {
             this.updateTokenStatus('invalid');
@@ -253,9 +228,9 @@ class GitHubUploader {
         
         const isValid = await this.validateToken(token);
         if (isValid) {
-            this.showMessage('Token valid! Anda bisa mengupload gambar.', 'success');
+            this.showMessage('Token valid!', 'success');
         } else {
-            this.showError('Token tidak valid. Periksa token dan permissions.');
+            this.showError('Token tidak valid.');
         }
     }
 
@@ -269,11 +244,7 @@ class GitHubUploader {
     }
 
     showSuccess(issueUrl) {
-        const markdownText = `![Image](${issueUrl})`;
-        
         document.getElementById('url-output').value = issueUrl;
-        document.getElementById('markdown-output').textContent = markdownText;
-        
         this.showSection('result-container');
         this.copyUrl();
     }
@@ -305,15 +276,13 @@ class GitHubUploader {
             document.getElementById('error-message');
             
         if (messageEl) {
-            const contentEl = messageEl.querySelector('.message-content');
-            if (contentEl) {
-                contentEl.innerHTML = `<strong>${type === 'success' ? 'Berhasil!' : 'Error!'}</strong> ${message}`;
-            }
+            messageEl.querySelector('.message-content').innerHTML = 
+                `<strong>${type === 'success' ? 'Berhasil!' : 'Error!'}</strong> ${message}`;
             messageEl.style.display = 'flex';
             
             setTimeout(() => {
                 messageEl.style.display = 'none';
-            }, 5000);
+            }, 3000);
         }
     }
 
@@ -324,10 +293,7 @@ class GitHubUploader {
 
     resetForm() {
         this.currentFile = null;
-        const fileInput = document.getElementById('file-input');
-        if (fileInput) {
-            fileInput.value = '';
-        }
+        document.getElementById('file-input').value = '';
         this.showSection('upload-area');
     }
 
@@ -343,31 +309,9 @@ class GitHubUploader {
             
             const copyBtn = document.querySelector('.btn-copy');
             if (copyBtn) {
-                const originalHtml = copyBtn.innerHTML;
                 copyBtn.innerHTML = '<i class="fas fa-check"></i>';
-                
                 setTimeout(() => {
-                    copyBtn.innerHTML = originalHtml;
-                }, 2000);
-            }
-        }
-    }
-
-    copyMarkdown() {
-        const markdownOutput = document.getElementById('markdown-output');
-        if (markdownOutput) {
-            const range = document.createRange();
-            range.selectNode(markdownOutput);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            
-            const copyBtns = document.querySelectorAll('.btn-copy');
-            if (copyBtns[1]) {
-                copyBtns[1].innerHTML = '<i class="fas fa-check"></i>';
-                
-                setTimeout(() => {
-                    copyBtns[1].innerHTML = '<i class="fas fa-copy"></i>';
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
                 }, 2000);
             }
         }
@@ -381,40 +325,31 @@ class GitHubUploader {
     }
 
     updateTokenStatus(status) {
-        const statusEl = document.getElementById('token-status');
         const statusTextEl = document.getElementById('token-status-text');
         
-        if (!statusEl || !statusTextEl) return;
+        if (!statusTextEl) return;
         
         let statusText, statusClass, icon;
         
         switch(status) {
             case 'valid':
-                statusText = 'Valid';
+                statusText = 'Token valid';
                 statusClass = 'valid';
                 icon = 'check-circle';
                 break;
             case 'invalid':
-                statusText = 'Invalid';
+                statusText = 'Token invalid';
                 statusClass = 'invalid';
                 icon = 'times-circle';
                 break;
             default:
-                statusText = 'Not Tested';
+                statusText = 'Token belum di-test';
                 statusClass = '';
                 icon = 'clock';
         }
         
-        statusEl.textContent = statusText;
-        statusTextEl.innerHTML = `<i class="fas fa-${icon}"></i><span>Token ${statusText.toLowerCase()}</span>`;
+        statusTextEl.innerHTML = `<i class="fas fa-${icon}"></i><span>${statusText}</span>`;
         statusTextEl.className = `token-status ${statusClass}`;
-    }
-
-    updateStats() {
-        const uploadCountEl = document.getElementById('upload-count');
-        if (uploadCountEl) {
-            uploadCountEl.textContent = this.uploadCount;
-        }
     }
 
     loadStoredData() {
@@ -422,11 +357,8 @@ class GitHubUploader {
             const storedCount = localStorage.getItem('upload_count');
             if (storedCount) {
                 this.uploadCount = parseInt(storedCount) || 0;
-                this.updateStats();
             }
-        } catch (e) {
-            console.error('Load data error:', e);
-        }
+        } catch (e) {}
     }
 
     formatFileSize(bytes) {
