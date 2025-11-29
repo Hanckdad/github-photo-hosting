@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Photo Hosting</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📸 GitHub Photo Hosting</h1>
+        <p class="description">Unggah foto ke GitHub Issues dan dapatkan URL langsung</p>
+        
+        <div class="success-message" id="success-message">
+            ✅ Foto berhasil diunggah ke GitHub! URL telah disalin.
+        </div>
+        
+        <div class="error-message" id="error-message">
+            ❌ Terjadi kesalahan saat mengunggah foto.
+        </div>
+        
+        <div class="upload-area" id="upload-area">
+            <div class="upload-icon">📷</div>
+            <h3>Klik atau seret foto ke sini</h3>
+            <p>Format: JPG, PNG, GIF, WebP (Maks. 5MB)</p>
+            <input type="file" id="file-input" accept="image/*">
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Mengunggah ke GitHub...</p>
+        </div>
+        
+        <div class="preview-container" id="preview-container">
+            <h3 class="preview-title">Pratinjau Foto</h3>
+            <img id="image-preview" src="" alt="Pratinjau Foto">
+            
+            <div class="image-info">
+                <p><strong>Nama file:</strong> <span id="file-name">-</span></p>
+                <p><strong>Ukuran:</strong> <span id="file-size">-</span></p>
+                <p><strong>Dimensi:</strong> <span id="file-dimensions">-</span></p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn primary" id="upload-btn">🚀 Upload ke GitHub</button>
+                <button class="btn secondary" id="cancel-btn">Batalkan</button>
+            </div>
+        </div>
+        
+        <div class="url-container" id="url-container">
+            <h3 class="url-title">✅ URL GitHub Photo</h3>
+            <div class="url-box">
+                <p>Foto Anda telah diupload ke GitHub:</p>
+                <input type="text" id="url-output" readonly>
+                <button class="btn success" id="copy-btn">📋 Salin URL</button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn primary" id="test-btn">🔗 Buka di GitHub</button>
+                <button class="btn secondary" id="new-upload-btn">📤 Upload Lagi</button>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>ℹ️ Cara Kerja</h3>
+            <ul>
+                <li>Foto diupload ke GitHub Issues repository <strong>Database-Foto</strong></li>
+                <li>Setiap foto menjadi issue baru dengan label <code>photo</code></li>
+                <li>URL langsung menuju ke issue yang berisi foto</li>
+                <li>Data tersimpan permanen di GitHub</li>
+                <li>Gunakan token GitHub untuk akses</li>
+            </ul>
+        </div>
+
+        <div class="token-section">
+            <h3>🔑 GitHub Token</h3>
+            <input type="password" id="github-token" placeholder="Masukkan GitHub Token Anda (ghp_...)" value="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">
+            <small>Token disimpan sementara di browser Anda</small>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2024 GitHub Photo Hosting - <strong>Hanckdad/Database-Foto</strong></p>
+    </footer>
+
+    <script src="upload.js"></script>
+</body>
+</html>
