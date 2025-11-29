@@ -1,12 +1,10 @@
-// Simple AES encryption for token storage
 class TokenEncryption {
     constructor() {
         this.key = 'PixelHostGitHubTokenKey2024!';
     }
 
-    // Simple XOR encryption (for demo purposes)
-    // In production, use Web Crypto API
     encrypt(text) {
+        if (!text) return '';
         let result = '';
         for (let i = 0; i < text.length; i++) {
             result += String.fromCharCode(text.charCodeAt(i) ^ this.key.charCodeAt(i % this.key.length));
@@ -15,6 +13,7 @@ class TokenEncryption {
     }
 
     decrypt(encryptedText) {
+        if (!encryptedText) return null;
         try {
             const text = atob(encryptedText);
             let result = '';
@@ -23,29 +22,37 @@ class TokenEncryption {
             }
             return result;
         } catch (e) {
+            console.error('Decryption error:', e);
             return null;
         }
     }
 
-    // Store encrypted token
     storeToken(token) {
         if (!token) return;
-        const encrypted = this.encrypt(token);
-        localStorage.setItem('github_token_encrypted', encrypted);
+        try {
+            const encrypted = this.encrypt(token);
+            localStorage.setItem('github_token_encrypted', encrypted);
+        } catch (e) {
+            console.error('Storage error:', e);
+        }
     }
 
-    // Retrieve and decrypt token
     getToken() {
-        const encrypted = localStorage.getItem('github_token_encrypted');
-        if (!encrypted) return null;
-        return this.decrypt(encrypted);
+        try {
+            const encrypted = localStorage.getItem('github_token_encrypted');
+            if (!encrypted) return null;
+            return this.decrypt(encrypted);
+        } catch (e) {
+            console.error('Token retrieval error:', e);
+            return null;
+        }
     }
 
-    // Clear stored token
     clearToken() {
-        localStorage.removeItem('github_token_encrypted');
+        try {
+            localStorage.removeItem('github_token_encrypted');
+        } catch (e) {
+            console.error('Token clear error:', e);
+        }
     }
 }
-
-// Initialize encryption
-const tokenCrypto = new TokenEncryption();
