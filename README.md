@@ -1,6 +1,8 @@
 # GitHub Photo Hosting
 
 Website untuk mengupload foto ke GitHub Issues dan mendapatkan URL langsung.
+![Image](https://github.com/user-attachments/assets/kgajwfrde1)
+
 
 ## Fitur
 
