@@ -1,6 +1,6 @@
 class TokenEncryption {
     constructor() {
-        this.key = 'PixelHostGitHubTokenKey2024!';
+        this.key = 'GitHubImageHostToken2024!';
     }
 
     encrypt(text) {
@@ -31,7 +31,7 @@ class TokenEncryption {
         if (!token) return;
         try {
             const encrypted = this.encrypt(token);
-            localStorage.setItem('github_token_encrypted', encrypted);
+            localStorage.setItem('github_image_token', encrypted);
         } catch (e) {
             console.error('Storage error:', e);
         }
@@ -39,7 +39,7 @@ class TokenEncryption {
 
     getToken() {
         try {
-            const encrypted = localStorage.getItem('github_token_encrypted');
+            const encrypted = localStorage.getItem('github_image_token');
             if (!encrypted) return null;
             return this.decrypt(encrypted);
         } catch (e) {
@@ -50,7 +50,7 @@ class TokenEncryption {
 
     clearToken() {
         try {
-            localStorage.removeItem('github_token_encrypted');
+            localStorage.removeItem('github_image_token');
         } catch (e) {
             console.error('Token clear error:', e);
         }
