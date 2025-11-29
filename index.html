@@ -60,22 +60,39 @@
                 <button class="btn secondary" id="new-upload-btn">📤 Upload Lagi</button>
             </div>
         </div>
+
+        <div class="token-section">
+            <h3>🔑 GitHub Token Setup</h3>
+            <div class="setup-steps">
+                <div class="step">
+                    <strong>1. Buat Token Baru:</strong>
+                    <p>Buka <a href="https://github.com/settings/tokens/new" target="_blank">GitHub Token Settings</a></p>
+                </div>
+                <div class="step">
+                    <strong>2. Set Permissions:</strong>
+                    <ul>
+                        <li>✅ <code>repo</code> (Full control of repositories)</li>
+                        <li>✅ <code>write:discussion</code> (Optional)</li>
+                    </ul>
+                </div>
+                <div class="step">
+                    <strong>3. Paste Token:</strong>
+                    <input type="password" id="github-token" placeholder="Masukkan GitHub Token Anda (ghp_...)">
+                    <button class="btn primary" id="test-token-btn">Test Token</button>
+                </div>
+            </div>
+            <div class="token-status" id="token-status"></div>
+        </div>
         
         <div class="info-box">
             <h3>ℹ️ Cara Kerja</h3>
             <ul>
-                <li>Foto diupload ke GitHub Issues repository <strong>Database-Foto</strong></li>
+                <li>Foto diupload ke GitHub Issues repository <strong>Hanckdad/Database-Foto</strong></li>
                 <li>Setiap foto menjadi issue baru dengan label <code>photo</code></li>
                 <li>URL langsung menuju ke issue yang berisi foto</li>
                 <li>Data tersimpan permanen di GitHub</li>
-                <li>Gunakan token GitHub untuk akses</li>
+                <li>Token disimpan secara lokal di browser Anda</li>
             </ul>
-        </div>
-
-        <div class="token-section">
-            <h3>🔑 GitHub Token</h3>
-            <input type="password" id="github-token" placeholder="Masukkan GitHub Token Anda (ghp_...)" value="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">
-            <small>Token disimpan sementara di browser Anda</small>
         </div>
     </div>
     
