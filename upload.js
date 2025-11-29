@@ -141,12 +141,13 @@ class GitHubUploader {
         this.showSection('loading-container');
 
         try {
-            const issueUrl = await this.createIssueWithImage(token);
+            // Upload gambar ke GitHub Releases sebagai attachment
+            const imageUrl = await this.uploadToGitHubReleases(token);
             
             this.uploadCount++;
             localStorage.setItem('upload_count', this.uploadCount.toString());
             
-            this.showSuccess(issueUrl);
+            this.showSuccess(imageUrl);
             
         } catch (error) {
             console.error('Upload error:', error);
@@ -154,14 +155,64 @@ class GitHubUploader {
         }
     }
 
+    async uploadToGitHubReleases(token) {
+        // Buat release baru untuk upload gambar
+        const releaseData = {
+            tag_name: `image-${Date.now()}`,
+            name: `Image Upload - ${new Date().toLocaleString('id-ID')}`,
+            body: 'Automated image upload via GitHub Image Host',
+            draft: false,
+            prerelease: false
+        };
+
+        // Buat release
+        const releaseResponse = await fetch(`${this.baseUrl}/repos/${this.owner}/${this.repo}/releases`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(releaseData)
+        });
+
+        if (!releaseResponse.ok) {
+            throw new Error(`Gagal membuat release: ${releaseResponse.status}`);
+        }
+
+        const release = await releaseResponse.json();
+        const uploadUrl = release.upload_url.replace('{?name,label}', '');
+
+        // Upload gambar sebagai asset
+        const formData = new FormData();
+        formData.append('file', this.currentFile);
+
+        const uploadResponse = await fetch(`${uploadUrl}?name=${this.currentFile.name}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+            },
+            body: this.currentFile
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error(`Gagal upload gambar: ${uploadResponse.status}`);
+        }
+
+        const asset = await uploadResponse.json();
+        
+        // Kembalikan URL gambar (browser_download_url)
+        return asset.browser_download_url;
+    }
+
     async createIssueWithImage(token) {
+        // Fallback method: buat issue dengan gambar embedded
         const base64Image = await this.fileToBase64(this.currentFile);
         
-        // Title hanya timestamp saja
-        const timestamp = new Date().getTime();
         const issueData = {
-            title: `Foto-${timestamp}`,
-            body: `![](${base64Image})` // Hanya gambar saja, tanpa caption
+            title: `Foto-${Date.now()}`,
+            body: `![](${base64Image})`
         };
 
         const response = await fetch(`${this.baseUrl}/repos/${this.owner}/${this.repo}/issues`, {
@@ -170,18 +221,12 @@ class GitHubUploader {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/vnd.github.v3+json',
                 'Content-Type': 'application/json',
-                'X-GitHub-Api-Version': '2022-11-28'
             },
             body: JSON.stringify(issueData)
         });
 
         if (!response.ok) {
-            let errorMessage = `GitHub API error: ${response.status}`;
-            try {
-                const errorData = await response.json();
-                errorMessage = errorData.message || errorMessage;
-            } catch (e) {}
-            throw new Error(errorMessage);
+            throw new Error(`GitHub API error: ${response.status}`);
         }
 
         const result = await response.json();
@@ -194,7 +239,6 @@ class GitHubUploader {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/vnd.github.v3+json',
-                    'X-GitHub-Api-Version': '2022-11-28'
                 }
             });
 
@@ -243,8 +287,13 @@ class GitHubUploader {
         });
     }
 
-    showSuccess(issueUrl) {
-        document.getElementById('url-output').value = issueUrl;
+    showSuccess(imageUrl) {
+        // Format markdown dengan URL asli GitHub
+        const markdownText = `![${this.currentFile.name}](${imageUrl})`;
+        
+        document.getElementById('url-output').value = imageUrl;
+        document.getElementById('markdown-output').textContent = markdownText;
+        
         this.showSection('result-container');
         this.copyUrl();
     }
@@ -312,6 +361,26 @@ class GitHubUploader {
                 copyBtn.innerHTML = '<i class="fas fa-check"></i>';
                 setTimeout(() => {
                     copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 2000);
+            }
+        }
+    }
+
+    copyMarkdown() {
+        const markdownOutput = document.getElementById('markdown-output');
+        if (markdownOutput) {
+            const range = document.createRange();
+            range.selectNode(markdownOutput);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            
+            const copyBtns = document.querySelectorAll('.btn-copy');
+            if (copyBtns[1]) {
+                copyBtns[1].innerHTML = '<i class="fas fa-check"></i>';
+                
+                setTimeout(() => {
+                    copyBtns[1].innerHTML = '<i class="fas fa-copy"></i>';
                 }, 2000);
             }
         }
